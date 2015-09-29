@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{BD7C7142-189A-48D2-BF00-E5D981807EA2}</ProjectGuid>
+    <ProjectGuid>{933E7DCC-45A3-4FD0-B5D8-C58CAB8B838A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>PrimeCL</RootNamespace>
+    <RootNamespace>CLcompiler</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -147,12 +147,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="io.c" />
     <ClCompile Include="cl_main.c" />
+    <ClCompile Include="io.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="io.h" />
+    <None Include="prime.cl" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="cl_main.h" />
+    <ClInclude Include="io.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,18 +15,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="io.c">
+    <ClCompile Include="cl_main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="cl_main.c">
+    <ClCompile Include="io.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="io.h">
+    <None Include="prime.cl">
+      <Filter>소스 파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cl_main.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="cl_main.h">
+    <ClInclude Include="io.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

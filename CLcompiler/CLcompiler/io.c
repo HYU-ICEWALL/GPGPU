@@ -15,3 +15,16 @@ char * file_read(const char * path, size_t * size)
 
 	return file_text;
 }
+char * line_read()
+{
+	size_t size = 0;
+	char ch, * result = (char*)malloc(sizeof(char));
+
+	while ((ch = getchar()) != EOF && ch != '\n')
+	{
+		result = (char*)realloc(result, sizeof(char) * size++ + sizeof(char));
+		result[size - 1] = ch;
+		result[size] = 0;
+	}
+	return result;
+}
