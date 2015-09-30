@@ -27,6 +27,14 @@
 #define BUFFER_SIZE (256)
 #define MAX_SOURCE_SIZE (0x100000)
 
+typedef struct CLdevice {
+	char * name;
+	cl_device_id device;
+	cl_bool compile_enabled;
+	cl_int platform_index;
+} cl_device;
+
+
 typedef struct CLplatform {
 	char * name;
 	char * profile;
@@ -36,21 +44,19 @@ typedef struct CLplatform {
 	cl_platform_id platform;
 } cl_platform;
 
-typedef struct CLdevice {
-	char * name;
-	cl_device_id device;
-	cl_bool compile_enabled;
-	cl_int platform;
-} cl_device;
-
 static cl_bool initilized = CL_FALSE;
 static cl_bool save_log = CL_FALSE;
+
+cl_int platform_count = 0, device_count = 0;
+cl_platform * platforms;
+cl_device * devices;
+
+enum options { l, p, d, o, u };
 
 int initilize(cl_platform **, cl_int *, cl_device **, cl_int *);
 int Compile(const cl_platform **, const cl_int *, const cl_device **, const cl_int *, const cl_int);
 
-void show_initilize(void);
 void show_help(void);
 
-void show_platform_list(const cl_platform *, cl_int, cl_bool);
-void show_device_list(const cl_device *, cl_int, cl_bool);
+void show_platform(cl_int, cl_bool);
+void show_device(cl_int, cl_bool);

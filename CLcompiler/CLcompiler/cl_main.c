@@ -3,65 +3,86 @@
 
 int main(int argc, char * argv[])
 {
+	printf("=======================OpenCL_Compiler=====================\n");
 	cl_int err = NO_ERR;
-	argc++;
 	if (argc < 2)
 		show_help();
 	else
 	{
-		cl_int platform_count = 0, device_count = 0;
-		cl_platform * platforms = (cl_platform*)malloc(sizeof(cl_platform));
-		cl_device * devices = (cl_device *)malloc(sizeof(cl_device));
-
+		platforms = (cl_platform*)malloc(sizeof(cl_platform));
+		devices = (cl_device *)malloc(sizeof(cl_device));
 		err |= initilize(&platforms, &platform_count, &devices, &device_count);
 		if (err == NO_ERR)
+		{
+			cl_int index;
 			initilized = CL_TRUE;
+			
+			//for (index = 0; index < platform_count; index++)
+				//show_platform(index, CL_TRUE);
+			cl_bool options[5] = { CL_FALSE, };
+			for (index = 1; index < argc; index++)
+			{
+				if (argv[index][0] == '-')
+				{
+				
+					switch (argv[index][1])
+					{
+						case 'l':
+							options[l] = CL_TRUE;
+							break;
+						case 'p':
+							options[p] = CL_TRUE;
+							break;
+						case 'd':
+							options[d] = CL_TRUE;
+							break;
+						case 'o':
+							options[o] = CL_TRUE;
+							break;
+						case 'u':
+							options[u] = CL_TRUE;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			
 
-
+		}
+		else
+			return err;
 	}
 	return err;
-}
-void show_initilize()
-{
-	printf("=======================OpenCL_Compiler=====================\n");
 }
 void show_help()
 {
 	printf("select platform and device to compile with\n");
-	printf("Option: -l [save log]\t-p [number of platform to use]\t-d [number of device to use]\n\t-o [location of *.cl]\t-u[capture mode]\n");
+	printf("Option: -l [save log to]\t-p [number of platform to use]\t-d [number of device to use]\n\t-o [location of *.cl]\t-u[capture mode]\n");
 }
-void show_platform_list(const cl_platform * platform, cl_int platform_count, cl_bool detail)
+void show_platform(cl_int index, cl_bool detail)
 {
-	cl_int _index, __index;
-	printf("=========================Platforms=========================\n");
-	for (_index = 0; _index < platform_count; _index++)
+	printf("%d. %s\n", index, platforms[index].name);
+	if (detail == CL_TRUE)
 	{
-		printf("%d. %s - %d Devices exist\n", _index, platform[_index].name, platform[_index].device_count);
-		if (detail == CL_TRUE)
-		{
-			for (__index = 0; __index < platform[_index].device_count; __index++)
-			{
-				
-			}
-		}
+		cl_int _index;
+		printf("\tvendor: %s\n\tversion: %s\n\tprofile: %s\n\tdevices: %d\n", 
+			platforms[index].vender, platforms[index].version, platforms[index].profile, platforms[index].device_count);
+		for (_index = 0; _index < device_count; _index++)
+			if (devices[_index].platform_index == index)
+				show_device(_index, detail);
 	}
 }
-void show_device_list(const cl_device * devices, cl_int device_count, cl_bool detail)
+void show_device(cl_int index, cl_bool detail)
 {
-	cl_int _index, __index;
-	printf("==========================Devices==========================\n");
-	for (_index = 0; _index < device_count; _index++)
+	printf("\t\t%d. %s\n", index, devices[index].name);
+	if (detail == CL_TRUE)
 	{
-		printf("%d. %s,\n\tcompile Enabled: %s\n", (int)_index, devices[_index].name, devices[_index].compile_enabled ? "TRUE" : "FALSE");
-		if (detail == CL_TRUE)
-		{
-
-		}
+		printf("\t\t\tcompile enable: %s\n", (devices[index].compile_enabled ? "TRUE" : "FALSE"));
 	}
 }
 int initilize(cl_platform ** platforms, cl_int * platform_count, cl_device ** devices, cl_int * device_count)
 {
-	printf("=======================OpenCL_Compiler=====================\n");
 	printf("initilize...");
 	cl_int err = NO_ERR, size = 0, device_count_temp = 0;
 	cl_int index, _index;
@@ -107,7 +128,6 @@ int initilize(cl_platform ** platforms, cl_int * platform_count, cl_device ** de
 		err |= clGetDeviceIDs(platform[index], CL_DEVICE_TYPE_ALL, device_count_temp, device, &device_count_temp);
 
 		(*devices) = (cl_device*)realloc((*devices), sizeof(cl_device) * ((*device_count) += device_count_temp));
-
 		for (_index = 0; _index < device_count_temp; _index++)
 		{
 			char * device_name_temp = (char*)malloc(sizeof(char) * BUFFER_SIZE);
@@ -121,7 +141,7 @@ int initilize(cl_platform ** platforms, cl_int * platform_count, cl_device ** de
 			//else
 				//printf("\t\tDevice%d does not support kernel compile!\n", _index);
 
-			(*devices)[(*device_count) - device_count_temp + _index].platform = index;
+			(*devices)[(*device_count) - device_count_temp + _index].platform_index = index;
 			(*devices)[(*device_count) - device_count_temp + _index].device = device[_index];
 			(*devices)[(*device_count) - device_count_temp + _index].compile_enabled = buffer[0];
 
@@ -137,7 +157,7 @@ int initilize(cl_platform ** platforms, cl_int * platform_count, cl_device ** de
 int Compile(const cl_platform ** platforms, const cl_int * platform_count, const cl_device ** devices, const cl_int * device_count, const cl_int input)
 {
 	cl_int err = NO_ERR, size = 0, index;
-	printf("%s-%s selected.\n", (*platforms)[(*devices)[input].platform].name, (*devices)[input].name);
+	printf("%s-%s selected.\n", (*platforms)[(*devices)[input].platform_index].name, (*devices)[input].name);
 
 	char * kernel_source = file_read("./dotproduct.cl", &size);
 	size_t kernel_source_size = size;
