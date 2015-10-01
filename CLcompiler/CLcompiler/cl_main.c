@@ -16,39 +16,60 @@ int main(int argc, char * argv[])
 		{
 			cl_int index;
 			initilized = CL_TRUE;
-			
 			//for (index = 0; index < platform_count; index++)
 				//show_platform(index, CL_TRUE);
-			cl_bool options[5] = { CL_FALSE, };
+			cl_uint option = 0, options[6] = { CL_FALSE, 0 };
+			option_o = (char*)malloc(sizeof(char) * BUFFER_SIZE);
+			option_l = (char*)malloc(sizeof(char) * BUFFER_SIZE);
+			strcpy(option_o, "cl.cl");
+			strcpy(option_l, "cl.log");
+
 			for (index = 1; index < argc; index++)
-			{
 				if (argv[index][0] == '-')
-				{
-				
 					switch (argv[index][1])
 					{
-						case 'l':
-							options[l] = CL_TRUE;
-							break;
-						case 'p':
-							options[p] = CL_TRUE;
-							break;
-						case 'd':
-							options[d] = CL_TRUE;
-							break;
-						case 'o':
-							options[o] = CL_TRUE;
-							break;
-						case 'u':
-							options[u] = CL_TRUE;
-							break;
-						default:
-							break;
+						case 'l':	options[(int)log2(option = l)] = CL_TRUE;	break;
+						case 't':	options[(int)log2(option = t)] = CL_TRUE;	break;
+						case 'o':	options[(int)log2(option = o)] = CL_TRUE;	break;
+						case 'u':	options[(int)log2(u)] = CL_TRUE;	printf("option Capture Mode on!\n");	break;
+						default:	break;
+					}
+				else if (option)
+				{
+					if (option >= o) {//target file location
+						printf("object file: %s\n", argv[index]);
+						free(option_o);
+						option_o = (char*)malloc(sizeof(char) * strlen(argv[index]) + sizeof(char));
+						strcpy(option_o, argv[index]);
+						option = 0;
+					}
+					if (option >= t) {//number of platform to use
+						printf("target file: %s\n",argv[index]);
+						option_t = atoi(argv[index]);
+						option = 0;
+					}
+					if (option >= l) {//save log with location
+						printf("log save: %s\n", argv[index]);
+						free(option_l);
+						option_l = (char*)malloc(sizeof(char) * strlen(argv[index]) + sizeof(char));
+						strcpy(option_l, argv[index]);
+						option = 0;
 					}
 				}
+			if (options[(int)log2(t)] == CL_TRUE && option_t == PRE_DEFINITION)
+			{
+				cl_int index;
+				for (index = 0; index < platform_count; index++)
+					show_platform(index, CL_TRUE);
 			}
-			
+			else if(options[(int)log2(t)] == CL_TRUE && option_t != PRE_DEFINITION)
+			{
 
+			}
+			else
+			{
+
+			}
 		}
 		else
 			return err;
@@ -58,7 +79,7 @@ int main(int argc, char * argv[])
 void show_help()
 {
 	printf("select platform and device to compile with\n");
-	printf("Option: -l [save log to]\t-p [number of platform to use]\t-d [number of device to use]\n\t-o [location of *.cl]\t-u[capture mode]\n");
+	printf("Option: -l [save log to]\t-t [number of device to use]\n\t-o [location of *.cl]\t-u[capture mode]\n");
 }
 void show_platform(cl_int index, cl_bool detail)
 {
